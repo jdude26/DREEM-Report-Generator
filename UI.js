@@ -39,6 +39,42 @@ function loadFile(event) {
   reader.readAsText(file);
 }
 
+
+  function readCSV(file) {
+  output.innerHTML = ""; // make sure to clear the output when getting a new file
+  //let file = file.target.files[0]; // the "change" event itself gets passed to this function
+
+  let thefile = $.ajax({url:file})
+
+  // make sure the file is a CSV
+  if (thefile.type !== "text/csv") {
+    printToOutput("This app can only take CSV files!");
+    return; // stop trying to do the other stuff in this function
+  }
+
+  // read the file with FileReader
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    // this function is called when the reader reads the file
+    // use d3-dsv to parse the CSV
+    json = d3.csvParse(e.target.result, d3.autoType); // see https://github.com/d3/d3-dsv#autoType
+    //printToOutput(JSON.stringify(json, null, 4));
+    countRows();
+
+    addButtons();
+    wordCloud();
+    fillCarousel();
+    addReflections();
+    //addCloseReadings();
+      
+  };
+  // reader reads the text of the file, triggering the "onload" function
+  reader.readAsText(thefile);
+      
+  }
+
+
+
 // when a file is added to the page, this function is called
 // it adds buttons for transforming the data, which are not
 // needed until there is actually data loaded!
@@ -289,6 +325,34 @@ $(document).ready(function(){
     $('.carousel').on('slide.bs.carousel', function () {
       addCloseReadings();
     })
+    
+    $('#reports').on('change', function(){
+        if(this.value == "Ableism"){
+            console.log("Ableism");
+            readCSV("Data/Ableism.csv");
+        }
+        else if(this.value == "Aesthetic"){
+            readCSV("Data/Aesthetic.csv");
+        }
+        else if(this.value == "Autism"){
+            readCSV("Data/Autism.csv");
+        }
+        else if(this.value == "Communication"){
+            readCSV("Data/Communication.csv");
+        }
+        else if(this.value == "EveryDayTasksVision"){
+            readCSV("Data/Everyday.csv");
+        }
+        else if(this.value == "Mobility"){
+            readCSV("Data/Mobility.csv");
+        }
+        else if(this.value == "Tourettes"){
+            readCSV("Data/Tourettes.csv");
+        }
+        else if(this.value == "TravelWithVisionImpairment"){
+            readCSV("Data/TravelVision.csv");
+        }
+    });
 });
                  
 
